@@ -1,0 +1,164 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,maximum-scale=1.0,initial-scale=1.0,minimum-scale=1.0,user-scalable=yes,shrink-to-fit=no" name="viewport">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>The Vet Connection</title>
+</head>
+<body>
+    <div>
+        <h1 class="h-mar">The Vet Connections - External Access - Requests</h1>
+    </div>
+    <div class="input-data">
+        <strong>Pet Name: </strong>
+        <input type="text" value="Lollipop" id="petName" placeholder="Enter Pet Name">
+        <strong>Email: </strong>
+        <input type="text" value="test_email@abv.bg" id="caseEmail" placeholder="Enter Email">
+        <strong>Phone: </strong>
+        <input type="text" value="" id="casePhone" placeholder="Enter Phone">
+        <strong>Inquiry Service Name: </strong>
+        <input type="text" style="width: 27em;" value="Televet Plus" id="serviceName" placeholder="Enter Service Name">
+        <strong>Api URL: </strong>
+        <input type="text" style="width: 27em;" value="" id="apiUrl" placeholder="Api URL">
+        <strong>Api Key: </strong>
+        <input type="text" style="width: 27em;" value="" id="serviceApiKey" placeholder="Service Api Key">
+    </div>
+    <br>
+    <div class="border-thin">
+        <!-- <h3 class="h-mar">QA on Web</h3> -->
+        <button onClick="externalAccess(urlKeys.qaStartAudio)">Audio Call</button>
+        <button onClick="externalAccess(urlKeys.qaStartChat)">Chat/Callback</button>
+        <button onClick="externalAccess(urlKeys.qaBookCase)">Book Case</button>
+        <button onClick="externalAccess(urlKeys.qaBookConsultation)">Book Consultation</button>
+        <button onclick="serviceChat(urlKeys.qaServiceChat)" >Service Inquiry/Chat</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var urlKeys = {
+            qaBookConsultation: "/api/ExternalAccess/BookConsultation",
+            qaBookCase: "/api/ExternalAccess/BookCase",
+            qaStartChat: "/api/ExternalAccess/StartChat",
+            qaStartAudio: "/api/ExternalAccess/StartAudio",
+            qaServiceChat: "/PetOwnerInquiry/",
+        }
+        var petDetails = {
+            "name": "Lollipop",
+            "petType": "Cat",
+            "breed": "Bombay",
+            "petAge": "Unknown",
+            "isSeeingAVet": "Yes",
+            "sex": "Male",
+            "isOnMedication": false,
+            "medicationNotes": "",
+            "isNeutered": false
+        }
+        var personalDetails = {
+            "title": "Mr",
+            "firstName": "Good",
+            "lastName": "Boy",
+            "telephone": "+359876556066",
+            "emailAddress": "test_email@abv.bg",
+            "policyNumber": ""
+        }
+
+        function setEmailPhone() {
+            petDetails.name = document.getElementById('petName').value;
+            personalDetails.telephone = document.getElementById('casePhone').value;
+            personalDetails.emailAddress = document.getElementById('caseEmail').value;
+        }
+
+        function serviceChat(url) {
+            var apiUrl = document.getElementById('apiUrl').value + url;
+            if (!apiUrl) return;
+            var serviceName = document.getElementById('serviceName').value;
+            // serviceName = serviceName.replace(" ", "%20");
+            window.open(apiUrl + serviceName, '_blank');
+        }
+
+        function externalAccess(url) {
+            var key = document.getElementById('serviceApiKey').value;
+            var apiUrl = document.getElementById('apiUrl').value + url;
+            if (!apiUrl || !key) return;
+            setEmailPhone();
+            personalDetails.firstName = url.split('/').slice(-1)[0];
+            if (["BookCase", "BookConsultation"].includes(personalDetails.firstName)) {
+                var callBackDate = new Date().toUTCString();
+                var requestData = {
+                    "petDetails": petDetails, 
+                    "personalDetails": personalDetails, 
+                    "callBackDateTime": "04/04/2023 02:04", 
+                    "preferredCommunication": "1" 
+                }
+            } else {
+                var requestData = {
+                    "petDetails": petDetails,
+                    "personalDetails": personalDetails
+                }
+            }
+            $.ajax({
+                url: apiUrl,
+                type: "POST",
+                data: JSON.stringify(requestData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                headers: {
+                    "Api-Key": key
+                },
+                success: function (response) {
+                    switch (personalDetails.firstName) {
+                        case 'BookConsultation':
+                            window.open(response.bookingUrl, '_blank');
+                            break;
+                        case 'BookCase':
+                            window.alert("SUCCESS");
+                            break;
+                        case 'StartChat':
+                        case 'StartAudio':
+                            window.open(response.chatUrl, '_blank');
+                            break;
+                        default:
+                            console.log(response);
+                            window.alert(`UNEXPECTED: ${personalDetails.firstName}`);
+                    }
+                },
+                failure: function (error) {
+                    console.log(error);
+                    window.alert("ERROR");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: rgb(239, 238, 238);
+        }
+        .input-data input {
+            width:13em;
+            margin-top: 1em;
+        }
+        div {
+            font-family: monospace;
+        }
+        .h-mar {
+            margin-top: 0.3em;
+            margin-bottom: 0.2em;
+        }
+        .border-thin {
+            background-color: whitesmoke;
+            padding:1em; 
+            margin-bottom:1em; 
+            border:2px solid lightgrey; 
+            border-radius:1em;
+        }
+        .border-thin button {
+            width: 13em;
+            border:1px solid gray; 
+            border-radius:0.25rem;
+        }
+        .border-thin button:hover {
+            background-color: rgb(220, 240, 243);
+        }
+    </style>
+</body>
