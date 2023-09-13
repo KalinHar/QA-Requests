@@ -64,31 +64,36 @@
             startAudio: "/api/ExternalAccess/StartAudio",
             serviceChat: "/PetOwnerInquiry/",
         }
-        var petDetails = {
-            "name": "Lollipop",
-            "petType": "Cat",
-            "breed": "Bombay",
-            "petAge": "Unknown",
-            "isSeeingAVet": "Yes",
-            "sex": "Male",
-            "isOnMedication": false,
-            "medicationNotes": "",
-            "isNeutered": false
-        }
-        var personalDetails = {
-            "title": "Mr",
-            "firstName": "Good",
-            "lastName": "Boy",
-            "telephone": "+359876556066",
-            "emailAddress": "test_email@abv.bg",
-            "policyNumber": ""
-        }
-        var noData = true;
 
-        function setEmailPhone() {
-            petDetails.name = document.getElementById('petName').value;
-            personalDetails.telephone = document.getElementById('casePhone').value;
-            personalDetails.emailAddress = document.getElementById('caseEmail').value;
+        function getRequestData(requestType) {
+            var personalDetails = {
+                "title": "Mr",
+                "firstName": requestType,
+                "lastName": "Boy",
+                "telephone": document.getElementById('casePhone').value,
+                "emailAddress": document.getElementById('caseEmail').value,
+                "policyNumber": ""
+            }
+            var petDetails = {
+                "name": document.getElementById('petName').value,
+                "petType": "Cat",
+                "breed": "Bombay",
+                "petAge": "Unknown",
+                "isSeeingAVet": "Yes",
+                "sex": "Male",
+                "isOnMedication": false,
+                "medicationNotes": "",
+                "isNeutered": false
+            }
+            var requestData = {
+                "petDetails": petDetails,
+                "personalDetails": personalDetails
+            }
+            if (["BookCase", "BookConsultation"].includes(requestType)) {
+                requestData["callBackDateTime"] = document.getElementById('bookCallbackDate').value;
+                requestData["preferredCommunication"] = "1";
+            }
+            return requestData;
         }
 
         function serviceChat(ext) {
@@ -100,13 +105,11 @@
             }
             errorMsg.innerText = "";
             var serviceName = document.getElementById('serviceName').value;
-            // serviceName = serviceName.replace(" ", "%20");
             window.open(apiUrl + serviceName, '_blank');
         }
 
         function externalAccess(ext) {
             var key = document.getElementById('serviceApiKey').value;
-            var calbackDate = document.getElementById('bookCallbackDate').value;
             var apiUrl = document.getElementById('apiUrl').value + ext;
             var errorMsg = document.getElementById('dataError');
             if (apiUrl == ext || !key) {
@@ -114,21 +117,8 @@
                 return;
             }
             errorMsg.innerText = "";
-            setEmailPhone();
-            personalDetails.firstName = apiUrl.split('/').slice(-1)[0];
-            if (["BookCase", "BookConsultation"].includes(personalDetails.firstName)) {
-                var requestData = {
-                    "petDetails": petDetails, 
-                    "personalDetails": personalDetails, 
-                    "callBackDateTime": calbackDate, 
-                    "preferredCommunication": "1" 
-                }
-            } else {
-                var requestData = {
-                    "petDetails": petDetails,
-                    "personalDetails": personalDetails
-                }
-            }
+            var requestType = apiUrl.split('/').slice(-1)[0];
+            var requestData = getRequestData(requestType);
             $.ajax({
                 url: apiUrl,
                 type: "POST",
@@ -139,7 +129,7 @@
                     "Api-Key": key
                 },
                 success: function (response) {
-                    switch (personalDetails.firstName) {
+                    switch (requestType) {
                         case 'BookConsultation':
                             window.open(response.bookingUrl, '_blank');
                             break;
@@ -151,7 +141,7 @@
                             window.open(response.chatUrl, '_blank');
                             break;
                         default:
-                            window.alert(`UNEXPECTED: ${personalDetails.firstName}`);
+                            window.alert(`UNEXPECTED: ${requestType}`);
                     }
                 },
                 failure: function (error) {
