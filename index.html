@@ -46,9 +46,6 @@
         </div>
     </div>
     <br>
-    <div class="border-thin" id="handled" style="display: none; background-color: red; width: 300px; height: 300px;">
-        <h2 class="h-mar" style="text-align: center; color:white">HANDLED</h2>
-    </div>
     <div class="border-thin">
         <h2 class="h-mar" style="text-align: center;">Requests</h2>
         <button onClick="externalAccess(urlExt.startAudio)">Audio Call</button>
@@ -65,9 +62,7 @@
         window.addEventListener(eventName, handleWindowRefresh);
 
         function handleWindowRefresh(event) {
-            event.preventDefault();
-            event.returnValue = '';
-            document.querySelector("#handled").style.display = "block";
+            document.querySelector("body").style.backgroundColor = "red";
         }
         
         var urlExt = {
@@ -195,16 +190,18 @@
             border-radius:1em;
         }
         .border-thin button {
-            width: 14em;
+             width: 14em;
             height: 2em;
-            border:none; 
+            border: 1px solid rgb(0 0 0 / 10%);; 
             border-radius:0.25rem;
             margin:0.4em; 
             font-size: medium;
             box-shadow: 1px 1px 4px 2px rgb(0 0 0 / 30%);
         }
         .border-thin button:hover {
+            transition:0.7s;
             background-color: rgb(220, 240, 243);
+            box-shadow: rgb(0 0 0 / 10%) 0px 10px 30px -12px inset;
         }
     </style>
 </body>
