@@ -47,6 +47,9 @@
     </div>
     <br>
     <div class="border-thin">
+        
+        <h2 class="h-mar" style="text-align: center;" id="event-name"></h2>
+
         <h2 class="h-mar" style="text-align: center;">Requests</h2>
         <button onClick="externalAccess(urlExt.startAudio)">Audio Call</button>
         <button onClick="externalAccess(urlExt.startChat)">Chat/Callback</button>
@@ -59,10 +62,17 @@
     <script>
         var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         var eventName = isIOS ? "pagehide" : "beforeunload";
+        document.querySelector("#event-name").innerText = eventName;
+        if (eventName == pagehide) {
+            window.addEventListener("pageshow", handleWindowRefreshed);
+        }
         window.addEventListener(eventName, handleWindowRefresh);
 
         function handleWindowRefresh(event) {
             document.querySelector("body").style.backgroundColor = "red";
+        }
+        function handleWindowRefreshed(event) {
+            document.querySelector("body").style.backgroundColor = "blue";
         }
         
         var urlExt = {
