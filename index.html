@@ -60,10 +60,11 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        var isIOS = !(/Windows|Android/.test(navigator.userAgent));
         // var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        var isIOS = navigator.userAgent.match(/iPhone/i);
+        // var isIOS = navigator.userAgent.match(/iPhone/i);
         var eventName = isIOS ? "pagehide" : "beforeunload";
-        document.querySelector("#event-name").innerText = navigator.userAgent;
+        document.querySelector("#event-name").innerText = eventName;
         if (eventName == "pagehide") {
             window.addEventListener("pageshow", handleWindowRefreshed);
         }
