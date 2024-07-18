@@ -73,19 +73,10 @@
 
         function handleWindowRefresh(event) {
             let tempp = localStorage.getItem("myConstant");
-            if (+tempp) {
-                if (+tempp == 5) {
-                    tempp = 0;
-                } else {
-                    tempp = +tempp + 1;
-                }
-            } else if (+tempp == 0) {
-                tempp = 1;
-            } else {
-                tempp = 0;
-            }
+            let constantValue = localStorage.getItem("myConstant") || 0;
+            constantValue = (+constantValue == 5) ? 0 : +constantValue + 1;
+            localStorage.setItem("myConstant", constantValue);
             document.querySelector("body").style.backgroundColor = colors[+tempp];
-            localStorage.setItem("myConstant", tempp);
             // document.querySelector("body").style.backgroundColor = "red";
         }
         function showTemp() {
