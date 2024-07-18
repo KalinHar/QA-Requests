@@ -49,7 +49,9 @@
     <div class="border-thin">
         
         <h2 class="h-mar" style="text-align: center;" id="device"></h2>
-
+        <button onclick="showTemp()" >Show Temp</button>
+        <h2 class="h-mar" style="text-align: center;" id="temp"></h2>
+        
         <h2 class="h-mar" style="text-align: center;">Requests</h2>
         <button onClick="externalAccess(urlExt.startAudio)">Audio Call</button>
         <button onClick="externalAccess(urlExt.startChat)">Chat/Callback</button>
@@ -60,6 +62,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        var colors = [ "whithe","green","grey","aqua","blue","red"];
         var isIOS = !(/Windows|Android/.test(navigator.userAgent));
         // var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         // var isIOS = navigator.userAgent.match(/iPhone/i);
@@ -69,7 +72,25 @@
         window.addEventListener(eventName, handleWindowRefresh);
 
         function handleWindowRefresh(event) {
-            document.querySelector("body").style.backgroundColor = "red";
+            let tempp = localStorage.getItem("myConstant");
+            if (+tempp) {
+                if (+tempp == 5) {
+                    tempp = 0;
+                } else {
+                    tempp = +tempp + 1;
+                }
+            } else if (+tempp == 0) {
+                tempp = 1;
+            } else {
+                tempp = 0;
+            }
+            document.querySelector("body").style.backgroundColor = colors[+tempp];
+            localStorage.setItem("myConstant", tempp);
+            // document.querySelector("body").style.backgroundColor = "red";
+        }
+        function showTemp() {
+            const temp = localStorage.getItem("myConstant");
+            document.querySelector("#temp").innerText = "Temp: " + temp;
         }
         
         var urlExt = {
