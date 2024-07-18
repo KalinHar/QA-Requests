@@ -65,19 +65,16 @@
         var colors = [ "whithe","green","grey","aqua","blue","red"];
         var isIOS = !(/Windows|Android/.test(navigator.userAgent));
         // var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        // var isIOS = navigator.userAgent.match(/iPhone/i);
         var eventName = isIOS ? "pagehide" : "beforeunload";
         document.querySelector("#device").innerText = isIOS ? "iOS" : "Windows/Android";
         
         window.addEventListener(eventName, handleWindowRefresh);
 
         function handleWindowRefresh(event) {
-            let tempp = localStorage.getItem("myConstant");
             let constantValue = localStorage.getItem("myConstant") || 0;
             constantValue = (+constantValue == 5) ? 0 : +constantValue + 1;
             localStorage.setItem("myConstant", constantValue);
-            document.querySelector("body").style.backgroundColor = colors[+tempp];
-            // document.querySelector("body").style.backgroundColor = "red";
+            document.querySelector("body").style.backgroundColor = colors[constantValue];
         }
         function showTemp() {
             const temp = localStorage.getItem("myConstant");
