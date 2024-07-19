@@ -49,7 +49,7 @@
     <div class="border-thin">
         
         <h2 class="h-mar" style="text-align: center;" id="device"></h2>
-        <button onclick="showTemp()" >Show Temp</button>
+        <button onclick="showTemp()" >Show Next</button>
         <h2 class="h-mar" style="text-align: center;" id="temp"></h2>
         
         <h2 class="h-mar" style="text-align: center;">Requests</h2>
@@ -72,13 +72,14 @@
 
         function handleWindowRefresh(event) {
             let constantValue = localStorage.getItem("myConstant") || 0;
+            document.querySelector("body").style.backgroundColor = colors[+constantValue];
+            
             constantValue = (+constantValue == 5) ? 0 : +constantValue + 1;
             localStorage.setItem("myConstant", constantValue);
-            document.querySelector("body").style.backgroundColor = colors[constantValue];
         }
         function showTemp() {
             const lastRefreshValue = localStorage.getItem("myConstant");
-            document.querySelector("#temp").innerText = "Refresh color: " + colors[lastRefreshValue];
+            document.querySelector("#temp").innerText = "Refresh Color: " + colors[+lastRefreshValue];
         }
         
         var urlExt = {
