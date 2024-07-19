@@ -47,11 +47,9 @@
     </div>
     <br>
     <div class="border-thin">
-        
         <h2 class="h-mar" style="text-align: center;" id="device"></h2>
-        <button onclick="showTemp()" >Show Next</button>
         <h2 class="h-mar" style="text-align: center;" id="temp"></h2>
-        
+        <hr>
         <h2 class="h-mar" style="text-align: center;">Requests</h2>
         <button onClick="externalAccess(urlExt.startAudio)">Audio Call</button>
         <button onClick="externalAccess(urlExt.startChat)">Chat/Callback</button>
@@ -62,24 +60,19 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        var constantValue = localStorage.getItem("myConstant") || 0;
         var colors = [ "white","green","yellow","aqua","blue","red"];
+        document.querySelector("#temp").innerText = "Refresh color: " + colors[+constantValue];
         var isIOS = !(/Windows|Android/.test(navigator.userAgent));
         // var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         var eventName = isIOS ? "pagehide" : "beforeunload";
         document.querySelector("#device").innerText = isIOS ? "iOS" : "Windows/Android";
-        
         window.addEventListener(eventName, handleWindowRefresh);
 
         function handleWindowRefresh(event) {
-            let constantValue = localStorage.getItem("myConstant") || 0;
             document.querySelector("body").style.backgroundColor = colors[+constantValue];
-            
             constantValue = (+constantValue == 5) ? 0 : +constantValue + 1;
             localStorage.setItem("myConstant", constantValue);
-        }
-        function showTemp() {
-            const lastRefreshValue = localStorage.getItem("myConstant");
-            document.querySelector("#temp").innerText = "Refresh Color: " + colors[+lastRefreshValue];
         }
         
         var urlExt = {
