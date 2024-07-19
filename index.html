@@ -62,7 +62,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        var colors = [ "whithe","green","grey","aqua","blue","red"];
+        var colors = [ "white","green","yellow","aqua","blue","red"];
         var isIOS = !(/Windows|Android/.test(navigator.userAgent));
         // var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         var eventName = isIOS ? "pagehide" : "beforeunload";
@@ -77,8 +77,8 @@
             document.querySelector("body").style.backgroundColor = colors[constantValue];
         }
         function showTemp() {
-            const temp = localStorage.getItem("myConstant");
-            document.querySelector("#temp").innerText = "Temp: " + temp;
+            const lastRefreshValue = localStorage.getItem("myConstant");
+            document.querySelector("#temp").innerText = "Refresh color: " + colors[lastRefreshValue];
         }
         
         var urlExt = {
